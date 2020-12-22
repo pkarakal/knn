@@ -68,6 +68,7 @@ cmake-build-debug/
 #IDEs
 .idea/
 .vscode/
+*.cbp
 
 # Compiled Object files
 *.slo
@@ -78,3 +79,6 @@ cmake-build-debug/
 
 # Compiled Static libraries
 *.lai
+
+# Executables
+knn
