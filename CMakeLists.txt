@@ -7,8 +7,15 @@ if (NOT VERBOSE)
 endif ()
 
 option(ENABLE_CLANGTIDY "Enable clang-tidy support?" OFF)
+option(ENABLE_OPENBLAS "Enable openblas support?" ON)
+
+if(ENABLE_OPENBLAS)
+    include(FindOpenBlas.cmake)
+endif()
 
 add_library(knn_lib OBJECT lib/knn_lib.cpp lib/knn_lib.hpp)
+target_link_libraries(knn_lib ${OpenBLAS_LIB})
+
 
 if (ENABLE_CLANGTIDY)
     include(FindClangTidy.cmake)
