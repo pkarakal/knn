@@ -23,7 +23,7 @@ int partition(double *arr, int l, int r){
  * @param {int} r: The right index
  * @param {int} k: The kth smallest element
  * @param {int} initialSize: The initial size of the array
- * @param {std::vectpr<double>} values: A vector of the k smallest values
+ * @param {std::vector<double>} values: A vector of the k smallest values
  */
 void quickSelect(double arr[], int l, int r, int  k, int initialSize, std::vector<double> &values) {
     // If k is smaller than number of
@@ -46,5 +46,66 @@ void quickSelect(double arr[], int l, int r, int  k, int initialSize, std::vecto
         // Else recur for right subarray
         return quickSelect(arr, index + 1, r,
                            k - index + l - 1, initialSize, values);
+    }
+}
+
+/**
+ *
+ * @param {double*} A: The matrix A
+ * @param {double*} B: The matrix B
+ * @param {std::tuple<int,int>} dimA: A tuple with the dimensions of A matrix
+ * @param {std::tuple<int,int>} dimA: A tuple with the dimensions of B matrix
+ * @param {double*} C: The result matrix
+ */
+void matrix_multiplication(double *A, double *B, std::tuple<int, int>& dimA,
+                           std::tuple<int,int>& dimB, double *C) {
+    assert(std::get<1>(dimA) == std::get<1>(dimB));
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
+                std::get<0>(dimA), std::get<0>(dimB),
+                std::get<1>(dimA), -2, A,
+                std::get<1>(dimA), B, std::get<1>(dimA),
+                0, C, std::get<0>(dimB));
+}
+
+static inline double computeSquare (double x) { return x*x; }
+
+/**
+ * Given a vector, calculates the square of the vector (A^2)
+ * @param {std::vector<double>&} vec
+ */
+void computeVectorSquare(std::vector<double>& vec){
+    std::transform(vec.begin(), vec.end(), vec.begin(), computeSquare);
+}
+
+/**
+ *
+ * @param {double*} arr: The matrix
+ * @param {std::tuple<int,int>} dims: A tuple with the dimensions of arr matrix
+ * @param {std::vector<double>&} C: A reference to the result vector
+ */
+void computeColumnSum(const double *arr, std::tuple<int,int> dims, std::vector<double>& vec){
+    for(int i = 0; i < std::get<0>(dims); i++) {
+        for(int j = 0; j < std::get<1>(dims); j++) {
+            vec.at(i) += arr[std::get<1>(dims)*i + j];
+        }
+    }
+}
+
+/**
+ *
+ * @param {std::vector<double>&} a : reference to the first vector
+ * @param {std::vector<double>&} b : reference to the second vector
+ * @param {std::tuple<int,int>} dimA : a tuple with the dimensions of the first vector
+ * @param {std::tuple<int,int>} dimB : a tuple with the dimensions of the second vector
+ * @param {std::vector<double>&} vec : a reference to the result vector
+ */
+void computeSumOfArrays(std::vector<double>& a, std::vector<double>& b, std::tuple<int,int> dimA,
+                        std::tuple<int,int> dimB, std::vector<double>& vec){
+    int n = std::get<0>(dimA);
+    int m = std::get<0>(dimB);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < m; j++) {
+            vec.at(j + m*i) = sqrt(vec.at(j + m*i) + a.at(i) + b.at(j));
+        }
     }
 }
