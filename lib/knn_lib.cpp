@@ -109,3 +109,11 @@ void computeSumOfArrays(std::vector<double>& a, std::vector<double>& b, std::tup
         }
     }
 }
+
+void findIndices(std::vector<double> const& elements, std::vector<double> const& distances, std::vector<int>& indices){
+    assert(distances.size() == indices.size());
+    for (int i=0 ; i < distances.size(); ++i){
+        indices.at(i) = std::distance(elements.begin(), std::find(elements.begin(), elements.end(), distances.at(i)));
+    }
+}
+
