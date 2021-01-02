@@ -16,6 +16,7 @@ endif()
 add_library(knn_lib OBJECT lib/knn_lib.cpp lib/knn_lib.hpp)
 target_link_libraries(knn_lib ${OpenBLAS_LIB})
 
+add_library(knn_result OBJECT lib/knn_result.cpp lib/knn_result.hpp)
 
 if (ENABLE_CLANGTIDY)
     include(FindClangTidy.cmake)
