@@ -24,3 +24,5 @@ endif ()
 
 add_executable(knn main.cpp)
 target_link_libraries(knn PUBLIC knn_lib)
+add_executable(knn_v0 src/knn_v0.cpp)
+target_link_libraries(knn_v0 PUBLIC knn_lib knn_result)
