@@ -51,7 +51,7 @@ $ sudo apt-get install cmake make g++ libopenmpi-dev \
     b. There are additional cmake files that import OpenBLAS and OpenMPI and 
     change the compiler to use the OpenMPI g++ compiler and there is also the
     option  to include ClangTidy support.
-    To enable the build of the executable that leverages OpenCilk run
+    To enable the build of the executable that leverages OpenBLAS run
     ```shell script
     $ cmake -S . -DENABLE_OPENBLAS=ON
     ``` 
