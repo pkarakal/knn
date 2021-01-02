@@ -61,6 +61,14 @@ $ sudo apt-get install cmake make g++ libopenmpi-dev \
     ```
     `mpic++` is a wrapper for g++ that already utilizes the corrent compiler and
     linker flags.
+    Alternatively, if you don't want to change the compiler for all the executables
+    and you already have `mpi`in your path, you can apply the patch present in the
+    git tree which adds a custom cmake target that builds the executables in the
+    same way but is more verbose
+    ```shell
+    $ git apply ./cmake.patch
+    $ cmake -S . -DENABLE_OPENMPI=ON
+    ```
     
     To enable Clang Tidy support use the following flag
     ```shell script
