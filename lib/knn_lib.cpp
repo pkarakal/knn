@@ -1,5 +1,5 @@
 #include "knn_lib.hpp"
-#include <bits/stdc++.h>
+namespace py=pybind11;
 
 int partition(double *arr, int l, int r){
     double x = arr[r];
@@ -115,5 +115,10 @@ void findIndices(std::vector<double> const& elements, std::vector<double> const&
     for (int i=0 ; i < distances.size(); ++i){
         indices.at(i) = std::distance(elements.begin(), std::find(elements.begin(), elements.end(), distances.at(i)));
     }
+}
+
+void convert_dok_to_csv(char* file){
+    py::module_ convert = py::module_::import("sparse_matrix_to_csv");
+    py::object result = convert.attr("convert_dictionary_to_csv")(file);
 }
 

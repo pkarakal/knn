@@ -8,13 +8,19 @@ endif ()
 
 option(ENABLE_CLANGTIDY "Enable clang-tidy support?" OFF)
 option(ENABLE_OPENBLAS "Enable openblas support?" ON)
+option(ENABLE_PYBIND11 "Enable python bindings support?" ON)
 
 if(ENABLE_OPENBLAS)
     include(FindOpenBlas.cmake)
 endif()
 
+if(ENABLE_PYBIND11)
+    find_package(pybind11 REQUIRED)
+    link_libraries(pybind11::embed pybind11::module pybind11::lto)
+endif()
+
 add_library(knn_lib OBJECT lib/knn_lib.cpp lib/knn_lib.hpp)
-target_link_libraries(knn_lib ${OpenBLAS_LIB})
+target_link_libraries(knn_lib PRIVATE ${OpenBLAS_LIB})
 
 add_library(knn_result OBJECT lib/knn_result.cpp lib/knn_result.hpp)
 
