@@ -77,9 +77,13 @@ cmake-build-debug/
 *.mod
 *.smod
 
+# Python cache
+__pycache__/
+
 # Compiled Static libraries
 *.lai
 
 # Executables
+converter
 knn
 knn_v0

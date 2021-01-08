@@ -5,6 +5,8 @@
 #include <openblas/cblas.h>
 #include <tuple>
 #include <vector>
+#include <bits/stdc++.h>
+#include <pybind11/embed.h>
 
 void quickSelect(double *arr, int l, int r, int k, int initialSize, std::vector<double> &values);
 int partition(double *arr, int l, int r);
@@ -16,5 +18,6 @@ void computeColumnSum(const double *arr, std::tuple<int,int> dims, std::vector<d
 void computeSumOfArrays(std::vector<double>& a, std::vector<double>& b, std::tuple<int,int> dimA,
                         std::tuple<int,int> dimB, std::vector<double>& vec);
 void findIndices(std::vector<double> const& elements, std::vector<double> const& distances, std::vector<int>& indices);
+void convert_dok_to_csv(char* file);
 
 #endif //KNN_KNN_LIB_HPP
