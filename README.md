@@ -18,8 +18,8 @@ To install them on variant Linux distributions follow the instructions below
 #### Fedora
 ```shell
 $ sudo dnf upgrade --refresh # updates installed packages and repositories metadata
-$ sudo dnf install cmake make gcc-c++ openmpi \
-  openmpi-devel openblas openblas-devel pkgconf
+$ sudo dnf install cmake make gcc-c++ openmpi  python3 \
+  openmpi-devel openblas openblas-devel pkgconf python3-pybind11
 # replace ${arch} with your CPU architecture eg .x86-64, aamd64
 $ module load mpi/openmpi-${arch}
 ```
@@ -29,7 +29,8 @@ $ module load mpi/openmpi-${arch}
 # updates installed packages and repositories metadata
 $ sudo apt-get update && sudo apt-get upgrade
 #installs dependencies
-$ sudo apt-get install cmake make g++ libopenmpi-dev libopenblas-dev pkg-config  
+$ sudo apt-get install cmake make g++ libopenmpi-dev \ 
+  libopenblas-dev pkg-config python3 python-pybind11 
 ```
 
 
@@ -74,3 +75,18 @@ $ sudo apt-get install cmake make g++ libopenmpi-dev libopenblas-dev pkg-config
     ```shell
     $ mpirun -n <number of instances> ./knn_v${variant}
     ```
+6.  There is also a converter program that converts files in dictionary of keys 
+    format `(col:data)` to csv excluding the "Label" column. This is calls python 
+    under the hood for reading and converting to csv. To compile it run 
+    ```shell
+    $ pip3 install -r requirements.txt
+    $ cmake -S . -DENABLE_PYBIND11=ON
+    $ make converter
+    ```
+    To run it use the following format:
+    ```shell
+    $ ./converter /path/to/file 
+    # or for multiple files
+    $ ./converter [ /path/to/file1 /path/to/file2 /path/to/fileN ]
+    ```
+    Make sure you have a python >=3.6 interpreter installed and in your PATH. 
