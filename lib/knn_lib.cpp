@@ -122,3 +122,12 @@ void convert_dok_to_csv(char* file){
     py::object result = convert.attr("convert_dictionary_to_csv")(file);
 }
 
+void preprocess_csv(char* file, int rows, char* delim){
+    py::module_ convert = py::module_::import("preprocess_csvs");
+    py::object result = convert.attr("preprocess_csvs")(file, rows, delim);
+}
+
+double fRand(double fMin, double fMax){
+    double f = (double)rand() / RAND_MAX;
+    return fMin + f * (fMax - fMin);
+}
