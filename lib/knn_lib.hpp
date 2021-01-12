@@ -22,4 +22,20 @@ void convert_dok_to_csv(char* file);
 void preprocess_csv(char* file, int rows, char* delim);
 double fRand(double fMin, double fMax);
 
+typedef struct VPTree {
+    double* data;
+    double* up;
+    int up_index;
+    double mu;
+    int left_size;
+    int right_size;
+    struct VPTree* left;
+    struct VPTree* right;
+} VPTree;
+
+VPTree* vpt_create(const double* data, VPTree* root, int m, int d);
+
+void search_vpt(const double* x_query, VPTree* root, int d, int k, double* dists, int* indices);
+
+
 #endif //KNN_KNN_LIB_HPP

@@ -131,3 +131,95 @@ double fRand(double fMin, double fMax){
     double f = (double)rand() / RAND_MAX;
     return fMin + f * (fMax - fMin);
 }
+
+VPTree* vpt_create(const double* data, VPTree* root, int m, int d) {
+
+    if(!m) {
+        return nullptr;
+    }
+
+    root = (VPTree*) malloc(sizeof(VPTree));
+    root->up = (double*) malloc(d * sizeof(double));
+    for(int i = 0; i < d; i++) {
+        root->up[i] = data[i];
+    }
+    int left_size = 0;
+    int right_size = 0;
+    root->left = (VPTree*) malloc(sizeof(VPTree));
+    root->right = (VPTree*) malloc(sizeof(VPTree));
+
+    root->left->data = (double*) malloc(d * left_size * sizeof(double));
+    root->right->data = (double*) malloc(d * right_size * sizeof(double));
+
+    double sum = 0;
+    for(int i = 1; i < m; i++) {
+        double temp_sum = 0;
+        for(int j = 0; j < d; j++){
+            temp_sum += std::pow(data[j] - data[i*d + j], 2);
+        }
+        temp_sum = sqrt(std::abs(temp_sum));
+        sum += temp_sum;
+    }
+    root->mu = sum / (m - 1);
+    for(int i = 1; i < m; i++) {
+        double temp_sum = 0;
+        for(int j = 0; j < d; j++){
+            // We could store those beforehand
+            temp_sum += std::pow(data[j] - data[i*d + j], 2 );
+        }
+        temp_sum = sqrt(abs(temp_sum));
+        if(temp_sum < root->mu) {
+            left_size++;
+            root->left_size = left_size;
+            root->left->data = (double*) realloc(root->left->data, d * left_size * sizeof(double));
+            for(int j = 0; j < d; j++) {
+                root->left->data[(left_size-1) * d + j] = data[i*d + j];
+            }
+        }
+        else {
+            right_size++;
+            root->right_size = right_size;
+            root->right->data = (double*) realloc(root->right->data, d * right_size * sizeof(double));
+            for(int j = 0; j < d; j++) {
+                root->right->data[(right_size-1) * d + j] = data[i*d + j];
+            }
+        }
+    }
+    root->left = vpt_create(root->left->data, root->left, left_size, d);
+    root->right = vpt_create(root->right->data, root->right, right_size, d);
+    return root;
+}
+
+void search_vpt(const double* x_query, VPTree* root, int d, int k, double* dists, int* indices) {
+
+    if(root == nullptr) {
+        return;
+    }
+    double distance = 0;
+    for(int j = 0; j < d; j++) {
+        distance += std::pow(root->up[j] - x_query[j],2 );
+    }
+    distance = sqrt(std::abs(distance));
+
+    for(int i = 0; i < k; i++) {
+        if(distance < dists[i]) {
+            for(int j = k - 1; j > i; j--) {
+                dists[j] = dists[j-1];
+                indices[j] = indices[j-1];
+            }
+            dists[i] = distance;
+            indices[i] = root->up_index;
+            break;
+        }
+    }
+
+    double radius = dists[k-1];
+
+    if(distance < root->mu + radius) {
+        search_vpt(x_query, root->left, d, k, dists, indices);
+    }
+    if(distance >= root->mu - radius) {
+        search_vpt(x_query, root->right, d, k, dists, indices);
+    }
+}
+
