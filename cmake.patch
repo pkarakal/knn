@@ -1,0 +1,20 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0127a93..47f2e5b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -35,9 +35,12 @@ target_link_libraries(knn PUBLIC knn_lib)
+ add_executable(knn_v0 src/knn_v0.cpp)
+ target_link_libraries(knn_v0 PUBLIC knn_lib knn_result)
+ if(OPEN_MPI_VERSION)
+-    add_executable(knn_v1 src/knn_v1.cpp)
+-    target_link_libraries(knn_v1 PUBLIC knn_lib knn_result ${OPEN_MPI_LIBRARIES})
+-    add_compile_options(-pthread)
++    add_custom_target(knn_v1 ALL
++            COMMAND gcc -c lib/knn_lib.hpp lib/knn_lib.cpp -O3
++            COMMAND gcc -c lib/knn_result.hpp lib/knn_result.cpp -O3
++            COMMAND mpic++ src/knn_v1.cpp knn_lib.o knn_result.o
++            -o knn_v1 -lmpi -lopenblas -O3
++            COMMAND rm knn_lib.o knn_result.o)
+     if(OPEN_MPI_COMPILE_FLAGS)
+         set_target_properties(knn_v1 PROPERTIES COMPILE_FLAGS "${OPEN_MPI_COMPILE_FLAGS}")
+     endif()

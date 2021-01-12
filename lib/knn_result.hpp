@@ -16,13 +16,24 @@ public:
     ~KNNResult() = default;
     void calculate_nearest_neighbors(std::vector<double>& x_indices, std::vector<double>& y_indices,
                                                 int n, int mLen, int d, int k);
+
+    int *getNidx() const;
+
+    void setNidx(int *nidx);
+
+    double *getNdist() const;
+
+    void setNdist(double *ndist);
+
 private:
     int *nidx{};
     std::vector<int> neighbor_index;
 public:
     const std::vector<int> &getNeighborIndex() const;
 
-    const std::vector<double> &getNeighborDistance() const;
+    std::vector<double> &getNeighborDistance();
+
+    void setNeighborDistance(const std::vector<double> &neighborDistance, int num);
 
 private:
     double *ndist{};

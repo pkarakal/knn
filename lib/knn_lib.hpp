@@ -19,5 +19,7 @@ void computeSumOfArrays(std::vector<double>& a, std::vector<double>& b, std::tup
                         std::tuple<int,int> dimB, std::vector<double>& vec);
 void findIndices(std::vector<double> const& elements, std::vector<double> const& distances, std::vector<int>& indices);
 void convert_dok_to_csv(char* file);
+void preprocess_csv(char* file, int rows, char* delim);
+double fRand(double fMin, double fMax);
 
 #endif //KNN_KNN_LIB_HPP

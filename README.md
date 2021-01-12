@@ -51,7 +51,7 @@ $ sudo apt-get install cmake make g++ libopenmpi-dev \
     b. There are additional cmake files that import OpenBLAS and OpenMPI and 
     change the compiler to use the OpenMPI g++ compiler and there is also the
     option  to include ClangTidy support.
-    To enable the build of the executable that leverages OpenCilk run
+    To enable the build of the executable that leverages OpenBLAS run
     ```shell script
     $ cmake -S . -DENABLE_OPENBLAS=ON
     ``` 
@@ -61,6 +61,14 @@ $ sudo apt-get install cmake make g++ libopenmpi-dev \
     ```
     `mpic++` is a wrapper for g++ that already utilizes the corrent compiler and
     linker flags.
+    Alternatively, if you don't want to change the compiler for all the executables
+    and you already have `mpi`in your path, you can apply the patch present in the
+    git tree which adds a custom cmake target that builds the executables in the
+    same way but is more verbose
+    ```shell
+    $ git apply ./cmake.patch
+    $ cmake -S . -DENABLE_OPENMPI=ON
+    ```
     
     To enable Clang Tidy support use the following flag
     ```shell script
@@ -90,3 +98,19 @@ $ sudo apt-get install cmake make g++ libopenmpi-dev \
     $ ./converter [ /path/to/file1 /path/to/file2 /path/to/fileN ]
     ```
     Make sure you have a python >=3.6 interpreter installed and in your PATH. 
+7.  There is, finally, a preprocessor for CSV files that removes headers from them,
+    and selects only numeric data which it converts to `float64`. When item is NAN, 
+    it generates a random number for it using a python lambda. To compile it run
+    ```shell
+    $ pip3 install -r requirements.txt
+    $ cmake -S . -DENABLE_PYBIND11=ON
+    $ make preprocessor
+    ```
+    To run it use the following format:
+    ```shell
+    $ ./preprocessor /path/to/file <rows_to_skip> "<delimeter>" 
+    # or for multiple files
+    $ ./converter  /path/to/file1 <rows_to_skip> "<delimeter>" \
+       /path/to/file2 <rows_to_skip> "<delimeter>" \
+       /path/to/fileN <rows_to_skip> "<delimeter>" 
+    ```

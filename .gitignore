@@ -69,6 +69,7 @@ cmake-build-debug/
 .idea/
 .vscode/
 *.cbp
+build/
 
 # Compiled Object files
 *.slo
@@ -87,3 +88,5 @@ __pycache__/
 converter
 knn
 knn_v0
+knn_v1
+preprocessor

@@ -61,7 +61,34 @@ const std::vector<int> &KNNResult::getNeighborIndex() const {
 }
 
 
-const std::vector<double> &KNNResult::getNeighborDistance() const {
+std::vector<double> &KNNResult::getNeighborDistance() {
     return neighbor_distance;
 }
 
+void KNNResult::setNeighborDistance(const std::vector<double> &neighborDistance, int num = 0) {
+    if(num) {
+        std::vector<double> temp = std::vector<double>(this->neighbor_distance);
+        temp.insert(std::end(temp), std::begin(neighborDistance), std::end(neighborDistance));
+        quickSelect(temp.data(), 0, this->neighbor_distance.size() - 1, num, neighbor_distance.size(),
+                    this->neighbor_distance);
+        findIndices(temp, this->getNeighborDistance(), this->neighbor_index);
+    } else {
+        std::copy(neighborDistance.begin(), neighborDistance.end(), this->neighbor_distance.begin());
+    }
+}
+
+int *KNNResult::getNidx() const {
+    return nidx;
+}
+
+void KNNResult::setNidx(int *nidx) {
+    KNNResult::nidx = nidx;
+}
+
+double *KNNResult::getNdist() const {
+    return ndist;
+}
+
+void KNNResult::setNdist(double *ndist) {
+    KNNResult::ndist = ndist;
+}
