@@ -69,6 +69,7 @@ cmake-build-debug/
 .idea/
 .vscode/
 *.cbp
+build/
 
 # Compiled Object files
 *.slo
