@@ -7,7 +7,7 @@
 KNNResult distAllKNN(double *X, int n, int d, int k);
 
 int main(int argc, char **argv) {
-    if (argc == 1) {
+    if (argc != 3) {
         std::cout << "Wrong number of arguments. Exiting ..." << std::endl;
         std::cout << "Usage: " << argv[0] << " /path/to/file <number of neighbors to find>" << std::endl;
         std::cout << std::endl;
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
         std::copy(vec.begin(), vec.end(), X.begin() + (i * d));
         vec.clear();
     }
-    MPI_Request req[2];
+    MPI_Request req[2] = {MPI_REQUEST_NULL, MPI_REQUEST_NULL};
     MPI_Status stats[2];
     MPI_Status status;
     int processes, pid;
@@ -37,6 +37,7 @@ int main(int argc, char **argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &pid);
     int chunks = processes>1 ? n/processes : n;
+    auto start = std::chrono::high_resolution_clock::now();
     std::vector<double> X_local, Y, Z;
     int counter=0;
     KNNResult subKNN = KNNResult(chunks+1,k);
@@ -78,6 +79,9 @@ int main(int argc, char **argv) {
             std::copy(subKNN.getNeighborDistance().begin(), subKNN.getNeighborDistance().end(), finalKNN.getNeighborDistance().begin());
         }
     }
+    auto stop = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = stop - start;
+    std::cout<<"Took "<< elapsed.count() << "s" << std::endl;
     MPI_Finalize();
 }
 
