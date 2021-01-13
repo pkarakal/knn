@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <fstream>
 #include <openmpi-x86_64/mpi.h>
 #include "../lib/knn_result.hpp"
 #include "../lib/rapidcsv.h"
@@ -105,23 +106,38 @@ int main(int argc, char **argv){
         std::copy(subKNN.getNeighborDistance().begin(), subKNN.getNeighborDistance().end(), dists.begin());
         std::copy(subKNN.getNeighborIndex().begin(), subKNN.getNeighborIndex().end(), indices.begin());
     }
-
+    KNNResult finalKNN = KNNResult(n,k);
     if(pid) {
         MPI_Send(&(subKNN.getNeighborDistance().at(0)), chunks * k, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
     }else {
-        KNNResult finalKNN = KNNResult(n,k);
         for(int i=1; i < processes; ++i) {
             auto temp = std::vector<double>(chunks*k);
             MPI_Recv(&(temp.at(0)), chunks*k, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             finalKNN.getNeighborDistance().insert(std::end(finalKNN.getNeighborDistance()), std::begin(temp), std::end(temp));
         }
-        for (int i = 0; i < processes; ++i) {
-            std::copy(subKNN.getNeighborDistance().begin(), subKNN.getNeighborDistance().end(), finalKNN.getNeighborDistance().begin());
-        }
+        std::copy(subKNN.getNeighborDistance().begin(), subKNN.getNeighborDistance().end(), finalKNN.getNeighborDistance().begin());
     }
     auto stop = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = stop - start;
     std::cout<<"Took "<< elapsed.count() << "s" << std::endl;
     MPI_Finalize();
+    if(!pid){
+        std::string input = argv[1];
+        std::string file_name = "results_" + input + "results_" + "v2.txt";
+        std::fstream file ("./results/v2/" + file_name);
+        if(file.is_open()){
+            file << "Took " << elapsed.count()<<"s"<<std::endl;
+            file << "K: " << k <<std::endl;
+            file << "N: " << n <<std::endl;
+            for (int i=0; i < X.size(); ++i){
+                file << i << ": ";
+                for(int j=0; j <k; ++j){
+                    file << finalKNN.getNeighborIndex().at(i*k+j) << " ";
+                }
+                file <<std::endl;
+            }
+            file.close();
+        }
+    }
 }
 

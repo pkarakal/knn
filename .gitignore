@@ -91,3 +91,6 @@ knn_v0
 knn_v1
 knn_v2
 preprocessor
+
+# Results
+results/
