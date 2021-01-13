@@ -36,7 +36,7 @@ if (ENABLE_CLANGTIDY)
     include(FindClangTidy.cmake)
 endif ()
 
-add_compile_options(-g)
+add_compile_options(-O3)
 add_executable(knn_v0 src/knn_v0.cpp)
 target_link_libraries(knn_v0 PUBLIC knn_lib knn_result)
 add_executable(converter converter.cpp)
