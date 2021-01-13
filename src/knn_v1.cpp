@@ -62,12 +62,12 @@ int main(int argc, char **argv) {
             temp.calculate_nearest_neighbors(X_local, Y, chunks, chunks, d, k);
             subKNN.setNeighborDistance(temp.getNeighborDistance(), k);
         }
-        MPI_Waitall(2*processes, req, stats);
+        MPI_Waitall(2, req, stats);
         std::copy(Z.begin(), Z.end(), Y.begin());
     }
 
     if(pid) {
-        MPI_Send(&(subKNN.getNeighborDistance().at(0)), chunks * k, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(subKNN.getNidx(), chunks * k, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
     }else {
         KNNResult finalKNN = KNNResult(n,k);
         for(int i=1; i < processes; ++i) {

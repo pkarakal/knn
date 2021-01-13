@@ -90,7 +90,6 @@ int main(int argc, char **argv){
             temp.calculate_nearest_neighbors(X_local, Y, chunks, chunks, d, k);
             subKNN.setNeighborDistance(temp.getNeighborDistance(), k);
         }
-        MPI_Waitall(6, req, stats);
         for(int w = 0; w < chunks; w++) {
             for(int j = 0; j < d; j++) {
                 queryVec.at(j) = Y.at(w * d + j);
@@ -101,7 +100,7 @@ int main(int argc, char **argv){
                 subKNN.getNidx()[j * chunks + w] = indices.at(j);
             }
         }
-
+        MPI_Waitall(6, req, stats);
         std::copy(Z.begin(), Z.end(), Y.begin());
         std::copy(subKNN.getNeighborDistance().begin(), subKNN.getNeighborDistance().end(), dists.begin());
         std::copy(subKNN.getNeighborIndex().begin(), subKNN.getNeighborIndex().end(), indices.begin());
