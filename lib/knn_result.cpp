@@ -67,11 +67,14 @@ std::vector<double> &KNNResult::getNeighborDistance() {
 
 void KNNResult::setNeighborDistance(const std::vector<double> &neighborDistance, int num = 0) {
     if(num) {
-        std::vector<double> temp = std::vector<double>(this->neighbor_distance);
-        temp.insert(std::end(temp), std::begin(neighborDistance), std::end(neighborDistance));
-        quickSelect(temp.data(), 0, (int) temp.size() - 1, 1, temp.size(),
+        std::vector<double> tempD = std::vector<double>(this->neighbor_distance);
+        std::vector<int> tempI = std::vector<int>(this->neighbor_index);
+        this->neighbor_distance.clear();
+        this->neighbor_index.clear();
+        tempD.insert(std::end(tempD), std::begin(neighborDistance), std::end(neighborDistance));
+        quickSelect(tempD.data(), 0, (int) tempD.size() - 1, 1, tempD.size(),
                     this->neighbor_distance);
-        findIndices(temp, this->neighbor_distance, this->neighbor_index);
+        findIndices(tempD, this->neighbor_distance, this->neighbor_index);
     } else {
         std::copy(neighborDistance.begin(), neighborDistance.end(), this->neighbor_distance.begin());
     }
