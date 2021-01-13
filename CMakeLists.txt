@@ -31,15 +31,12 @@ target_link_libraries(knn_lib PRIVATE ${OpenBLAS_LIB})
 
 add_library(knn_result OBJECT lib/knn_result.cpp lib/knn_result.hpp)
 add_library(rapidcsv OBJECT lib/rapidcsv.h)
-add_library(vptree OBJECT lib/vptree.cpp lib/vptree.hpp)
 
 if (ENABLE_CLANGTIDY)
     include(FindClangTidy.cmake)
 endif ()
 
 add_compile_options(-g)
-add_executable(knn main.cpp)
-target_link_libraries(knn PUBLIC knn_lib)
 add_executable(knn_v0 src/knn_v0.cpp)
 target_link_libraries(knn_v0 PUBLIC knn_lib knn_result)
 add_executable(converter converter.cpp)
