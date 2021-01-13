@@ -66,10 +66,10 @@ int main(int argc, char **argv) {
         std::copy(Z.begin(), Z.end(), Y.begin());
     }
 
+    KNNResult finalKNN = KNNResult(n,k);
     if(pid) {
         MPI_Send(subKNN.getNidx(), chunks * k, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
     }else {
-        KNNResult finalKNN = KNNResult(n,k);
         for(int i=1; i < processes; ++i) {
             auto temp = std::vector<double>(chunks*k);
             MPI_Recv(&(temp.at(0)), chunks*k, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -83,5 +83,23 @@ int main(int argc, char **argv) {
     std::chrono::duration<double> elapsed = stop - start;
     std::cout<<"Took "<< elapsed.count() << "s" << std::endl;
     MPI_Finalize();
+    if(!pid){
+        std::string input = argv[1];
+        std::string file_name = "results_" + input + "results_" + "v1.txt";
+        std::fstream file ("./results/v1/" + file_name);
+        if(file.is_open()){
+            file << "Took " << elapsed.count()<<"s"<<std::endl;
+            file << "K: " << k <<std::endl;
+            file << "N: " << n <<std::endl;
+            for (int i=0; i < X.size(); ++i){
+                file << i << ": ";
+                for(int j=0; j <k; ++j){
+                    file << finalKNN.getNeighborIndex().at(i*k+j) << " ";
+                }
+                file <<std::endl;
+            }
+            file.close();
+        }
+    }
 }
 
